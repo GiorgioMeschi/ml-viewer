@@ -16,9 +16,7 @@ sys.path.append(PATH)
 
 DATAPATH = '/home/drought/workspaces/GM/sardegna2/viewer/ml-viewer/data'
 
-
 #%% app
-
 
 st.set_page_config(layout="wide")
 
