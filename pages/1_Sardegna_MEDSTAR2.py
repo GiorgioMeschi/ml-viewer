@@ -9,13 +9,13 @@ from PIL import Image
 p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
-from HOME import DATAPATH
+from HOME import DATAPATH_1
 from utils import plot_img
 
 
 #%%
 
-project_datapath = f'{DATAPATH}/sardegna-medstar'
+project_datapath = f'{DATAPATH_1}/sardegna-medstar'
 
 run_dates = sorted([f for f in os.listdir(project_datapath) if f != 'static'])
 

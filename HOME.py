@@ -14,7 +14,8 @@ sys.path.append(PATH)
 
 #%% global vars
 
-DATAPATH = '/home/drought/workspaces/GM/sardegna2/viewer/ml-viewer/data'
+DATAPATH_1 = '/home/fremen/workspaces/GM/projects/sardegna2025/viewer/ml-viewer/data'
+
 
 #%% app
 
