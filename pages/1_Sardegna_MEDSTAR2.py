@@ -9,13 +9,13 @@ from PIL import Image
 p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
-from HOME import DATAPATH_1
+from HOME import DATAPATH
 from utils import plot_img
 
 
 #%%
 
-project_datapath = f'{DATAPATH_1}/sardegna-medstar'
+project_datapath = f'{DATAPATH}/sardegna-medstar'
 
 run_dates = sorted([f for f in os.listdir(project_datapath) if f != 'static'])
 
@@ -44,7 +44,7 @@ with columns_1st[0]:
     # st.subheader('Fuel MAP')
     fuel_path = f'{project_datapath}/{run_date}'
     fuel_img = [f for f in os.listdir(fuel_path) if f.startswith('haz_plot_')][0]
-    plot_img(f'{fuel_path}/{fuel_img}', img_width+300)
+    plot_img(f'{fuel_path}/{fuel_img}', img_width)
     
 
 with columns_1st[1]:

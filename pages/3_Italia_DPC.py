@@ -1,3 +1,4 @@
+
 #%%
 
 import streamlit as st
@@ -14,7 +15,7 @@ from utils import plot_img
 
 #%%
 
-project_datapath = f'{DATAPATH}/calabria-firescene'
+project_datapath = f'{DATAPATH}/italia-dpc'
 
 run_dates = sorted([f for f in os.listdir(project_datapath) if f != 'static'])
 
@@ -31,7 +32,7 @@ run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(
 
 header_cols = st.columns(3)
 with header_cols[1]:
-    st.header('Calabria FIRE-SCENE')
+    st.header('Italia 2025 DPC')
 
 st.divider()
 
@@ -74,24 +75,24 @@ with columns_2nd[2]:
     spi6_path = f'{project_datapath}/{run_date}/SPI6_{run_date}.png'
     plot_img(spi6_path, img_width_1)
 
-st.divider()
+# st.divider()
 
-columns_3rd = st.columns(3)
+# columns_3rd = st.columns(3)
 
-with columns_3rd[0]:
-    st.subheader('SPEI 1')
-    spei1_path = f'{project_datapath}/{run_date}/SPEI1_{run_date}.png'
-    plot_img(spei1_path, img_width_1)
+# with columns_3rd[0]:
+#     st.subheader('SPEI 1')
+#     spei1_path = f'{project_datapath}/{run_date}/SPEI1_{run_date}.png'
+#     plot_img(spei1_path, img_width_1)
 
-with columns_3rd[1]:
-    st.subheader('SPEI 3')
-    spei3_path = f'{project_datapath}/{run_date}/SPEI3_{run_date}.png'
-    plot_img(spei3_path, img_width_1)
+# with columns_3rd[1]:
+#     st.subheader('SPEI 3')
+#     spei3_path = f'{project_datapath}/{run_date}/SPEI3_{run_date}.png'
+#     plot_img(spei3_path, img_width_1)
 
-with columns_3rd[2]:
-    st.subheader('SPEI 6')
-    spei6_path = f'{project_datapath}/{run_date}/SPEI6_{run_date}.png'
-    plot_img(spei6_path, img_width_1)
+# with columns_3rd[2]:
+#     st.subheader('SPEI 6')
+#     spei6_path = f'{project_datapath}/{run_date}/SPEI6_{run_date}.png'
+#     plot_img(spei6_path, img_width_1)
 
 st.divider()
 
