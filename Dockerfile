@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.13.7
+FROM python:3.9-slim
 
 WORKDIR /app
 
@@ -17,4 +17,4 @@ ENV CREDENTIALS_PATH=/app/credentials.yaml
 EXPOSE 8501
 
 # run streamlit (use your main entry file; you wrote HOME.py)
-CMD ["streamlit", "run", "HOME.py", "--server.port", "8501", "--server.headless", "true", "--server.enableCORS", "false"]
+ENTRYPOINT  ["streamlit", "run", "HOME.py", "--server.port=8501", "--server.address=0.0.0.0"]
