@@ -1,0 +1,40 @@
+services:
+  streamlit:
+    build: .
+    image: ml-viewer:latest
+    # do NOT publish host port — keep internal only
+    expose:
+      - "8501"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data:ro
+      - ./credentials.yaml:/app/credentials.yaml:ro
+      - ./pages:/app/pages:ro
+      - ./utils.py:/app/utils.py:ro
+      - ./auth.py:/app/auth.py:ro
+      - ./HOME.py:/app/HOME.py:ro
+    restart: unless-stopped
+
+
+# services:
+#     app:
+#         build: ./
+#         command: streamlit run app/HOME.py --server.port 8501
+#         volumes:
+#           - ./data:/app/data:ro
+#           - ./credentials.yaml:/app/credentials.yaml:ro
+#           - ./pages:/app/pages:ro
+#           - ./utils.py:/app/utils.py:ro
+#           - ./auth.py:/app/auth.py:ro
+#           - ./HOME.py:/app/HOME.py:ro
+#         ports:
+#             - 8501:8501
+#         image: fuelmaps_risico25:latest
+
+  # cloudflared:
+  #   image: cloudflare/cloudflared:latest
+  #   command: tunnel --url http://streamlit:8501
+  #   depends_on:
+  #     - streamlit
+  #   restart: unless-stopped

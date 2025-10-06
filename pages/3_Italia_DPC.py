@@ -1,3 +1,4 @@
+
 #%%
 
 import streamlit as st
@@ -16,8 +17,7 @@ except Exception as e:  # None (widget shown, not yet submitted)
 
 
 if st.session_state.get('authentication_status'):
-    logout_widget(key = 'logut_page2')
-
+    logout_widget(key = 'logut_page3')
 
     p = os.path.dirname(os.path.dirname(__file__) )
     sys.path.append(p)
@@ -27,7 +27,7 @@ if st.session_state.get('authentication_status'):
 
 
     # page code
-    project_datapath = f'{DATAPATH}/calabria-firescene'
+    project_datapath = f'{DATAPATH}/italia-dpc'
 
     run_dates = sorted([f for f in os.listdir(project_datapath) if f != 'static'])
 
@@ -44,7 +44,7 @@ if st.session_state.get('authentication_status'):
 
     header_cols = st.columns(3)
     with header_cols[1]:
-        st.header('Calabria FIRE-SCENE')
+        st.header('Italia 2025 DPC')
 
     st.divider()
 
@@ -87,24 +87,24 @@ if st.session_state.get('authentication_status'):
         spi6_path = f'{project_datapath}/{run_date}/SPI6_{run_date}.png'
         plot_img(spi6_path, img_width_1)
 
-    st.divider()
+    # st.divider()
 
-    columns_3rd = st.columns(3)
+    # columns_3rd = st.columns(3)
 
-    with columns_3rd[0]:
-        st.subheader('SPEI 1')
-        spei1_path = f'{project_datapath}/{run_date}/SPEI1_{run_date}.png'
-        plot_img(spei1_path, img_width_1)
+    # with columns_3rd[0]:
+    #     st.subheader('SPEI 1')
+    #     spei1_path = f'{project_datapath}/{run_date}/SPEI1_{run_date}.png'
+    #     plot_img(spei1_path, img_width_1)
 
-    with columns_3rd[1]:
-        st.subheader('SPEI 3')
-        spei3_path = f'{project_datapath}/{run_date}/SPEI3_{run_date}.png'
-        plot_img(spei3_path, img_width_1)
+    # with columns_3rd[1]:
+    #     st.subheader('SPEI 3')
+    #     spei3_path = f'{project_datapath}/{run_date}/SPEI3_{run_date}.png'
+    #     plot_img(spei3_path, img_width_1)
 
-    with columns_3rd[2]:
-        st.subheader('SPEI 6')
-        spei6_path = f'{project_datapath}/{run_date}/SPEI6_{run_date}.png'
-        plot_img(spei6_path, img_width_1)
+    # with columns_3rd[2]:
+    #     st.subheader('SPEI 6')
+    #     spei6_path = f'{project_datapath}/{run_date}/SPEI6_{run_date}.png'
+    #     plot_img(spei6_path, img_width_1)
 
     st.divider()
 
@@ -132,7 +132,6 @@ if st.session_state.get('authentication_status'):
         st.subheader('Aspect')
         aspect_path = f'{static_path}/Aspect.png'
         plot_img(aspect_path, img_width_1)
-
 
 elif st.session_state.get('authentication_status') is False:
     st.error('Username/password is incorrect')
