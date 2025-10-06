@@ -17,30 +17,11 @@ from utils import prune_old_temp_dirs, safe_extract_zip_bytes
 
 #%% init uploader
 
-# import yaml
-# import streamlit_authenticator as stauth
-# from auth import login_widget, logout_widget
-
-# try:
-#     auth_status = login_widget()  # visible login on main page
-# except Exception as e:  # None (widget shown, not yet submitted)
-#     # st.error("Username/password incorrect")
-#     st.error(str(e))
-#     # st.stop()
-# #a dd it in sessions tate car
-# if "login" not in st.session_state:
-#     st.session_state["login"] = auth_status
-
-# if 'logout' not in st.session_state:
-#     st.session_state['logout'] = False
-
 PATH = os.path.dirname(__file__)
+TEMP_BASE = os.path.join(tempfile.gettempdir(), "mlviewer_uploads")  
+
 # PATH = os.getcwd()
 sys.path.append(PATH)
-
-TEMP_BASE = os.path.join(tempfile.gettempdir(), "mlviewer_uploads")  # e.g. /tmp/mlviewer_uploads
-
-# Ensure base temp exists
 os.makedirs(TEMP_BASE, exist_ok=True)
 
 
@@ -71,19 +52,13 @@ def handle_upload_ui():
             # save into session_state for use across pages in this session
             st.session_state["data_root"] = upload_dir
             st.success(f"Uploaded and extracted to session folder.")
-            # optional: show some files
-            pngs = []
-            for root, dirs, files in os.walk(upload_dir):
-                for f in files:
-                    if f.lower().endswith(".png"):
-                        pngs.append(os.path.relpath(os.path.join(root, f), upload_dir))
-            st.write(f"Found {len(pngs)} PNG files (session-only).")
+
 
     # If already uploaded in this session, show controls
     data_root = st.session_state.get("data_root")
     if data_root and os.path.isdir(data_root):
-        st.write("You have an active upload for this session:")
-        st.write(data_root)
+        st.write("You have an active upload for this session.")
+        # st.write(data_root)
         if st.sidebar.button("Finish session and remove my upload"):
             try:
                 shutil.rmtree(data_root)
@@ -97,32 +72,49 @@ def handle_upload_ui():
 
 #%% app
 
-st.set_page_config(layout="wide")
+if __name__ == "__main__":
 
-# if __name__ == '__main__':
-st.write('Select a project from the sidebar to start exploring the data')
+    st.set_page_config(layout="wide")
+    st.write('Select a project from the sidebar to start exploring the data')
 
-def count_sessions_unsafe():
-    # Find the global Runtime object
-    import gc
-    rt = next(o for o in gc.get_objects() if isinstance(o, Runtime))
-    # Session manager may be accessible like this in some versions:
-    sess_mgr = rt._session_mgr  # private
-    # Each session has websocket(s); count those considered active
-    return len(list(sess_mgr.list_sessions()))  # method name varies by version!
+    def count_sessions_unsafe():
+        # Find the global Runtime object
+        import gc
+        rt = next(o for o in gc.get_objects() if isinstance(o, Runtime))
+        # Session manager may be accessible like this in some versions:
+        sess_mgr = rt._session_mgr  # private
+        # Each session has websocket(s); count those considered active
+        return len(list(sess_mgr.list_sessions()))  # method name varies by version!
 
-st.write("Connected sessions:", count_sessions_unsafe())
+    st.write("Connected sessions:", count_sessions_unsafe())
 
-handle_upload_ui()
-
-# elif st.session_state.get('authentication_status') is False:
-#     st.error('Username/password is incorrect')
-# elif st.session_state.get('authentication_status') is None:
-#     st.warning('Please enter your username and password')
+    handle_upload_ui()
 
 
     
 #%%
+# import yaml
+# import streamlit_authenticator as stauth
+# from auth import login_widget, logout_widget
 
+# try:
+#     auth_status = login_widget()  # visible login on main page
+# except Exception as e:  # None (widget shown, not yet submitted)
+#     # st.error("Username/password incorrect")
+#     st.error(str(e))
+#     # st.stop()
+# #a dd it in sessions tate car
+# if "login" not in st.session_state:
+#     st.session_state["login"] = auth_status
 
+# if 'logout' not in st.session_state:
+#     st.session_state['logout'] = False
+
+# if st.session_state.get('authentication_status'):
+#     logout_widget(key = 'logut_home')
+#     handle_upload_ui()
+# elif st.session_state.get('authentication_status') is False:
+#     st.error('Username/password is incorrect')
+# elif st.session_state.get('authentication_status') is None:
+#     st.warning('Please enter your username and password')
 

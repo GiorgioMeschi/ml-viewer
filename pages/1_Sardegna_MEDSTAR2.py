@@ -7,32 +7,9 @@ import os
 from PIL import Image
 import shutil 
 
-# from auth import login_widget, logout_widget
+#%%
 
-# transfer the autentication among pages
-# try:
-#     auth_status = login_widget()  # visible login on main page
-# except Exception as e:  # None (widget shown, not yet submitted)
-#     # st.error("Username/password incorrect")
-#     st.error(str(e))
-
-
-# if st.session_state.get('authentication_status'):
-#     logout_widget(key = 'logut_page1')
-
-
-# def get_session_data_root():
-#     """
-#     Return the uploader's data root from session_state if present and valid.
-#     If not present, show an info message and stop the page.
-#     """
-#     data_root = st.session_state.get("data_root")
-#     if not data_root or not os.path.isdir(data_root):
-#         st.info("No uploaded dataset found for this session. Please upload a zip on the Home page first.")
-#         st.stop()
-#     return data_root
-
-def get_session_data_root_or_stop():
+def access_data():
     data_root = st.session_state.get("data_root")
     if not data_root or not os.path.isdir(data_root):
         st.info("No uploaded dataset for this session. Please upload on the Home page.")
@@ -46,23 +23,20 @@ def get_session_data_root_or_stop():
         st.session_state.pop("data_root", None)
         st.success("Your upload was removed.")
         st.stop()
-        
+
     return data_root
 
 
 p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
-# from HOME import DATAPATH
 from utils import plot_img
-# DATAPATH = get_session_data_root()
-DATAPATH = get_session_data_root_or_stop()
+DATAPATH = access_data()
 
 # page code
 project_datapath = f'{DATAPATH}/data/sardegna-medstar'
 
 run_dates = sorted([f for f in os.listdir(project_datapath) if f != 'static'])
-
 latest = run_dates[0]
 
 # initiate the country selection 
@@ -167,7 +141,20 @@ with columns_4th[3]:
 
 
 
+#%%
 
+# from auth import login_widget, logout_widget
+
+# transfer the autentication among pages
+# try:
+#     auth_status = login_widget()  # visible login on main page
+# except Exception as e:  # None (widget shown, not yet submitted)
+#     # st.error("Username/password incorrect")
+#     st.error(str(e))
+
+
+# if st.session_state.get('authentication_status'):
+#     logout_widget(key = 'logut_page1')
 # elif st.session_state.get('authentication_status') is False:
 #     st.error('Username/password is incorrect')
 # elif st.session_state.get('authentication_status') is None:
