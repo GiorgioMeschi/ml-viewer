@@ -1,28 +1,32 @@
 
 
-#%%
+#%% libs
 
 import os
-import sys
+import io
+import time
+import zipfile
+import shutil
 import streamlit as st
+import tempfile
+import sys
 from streamlit.runtime.scriptrunner import get_script_run_ctx
 from streamlit.runtime import Runtime
 
+from utils import prune_old_temp_dirs, safe_extract_zip_bytes
 
-import yaml
-import streamlit as st
-import streamlit_authenticator as stauth
+#%% init uploader
 
+# import yaml
+# import streamlit_authenticator as stauth
+# from auth import login_widget, logout_widget
 
-from auth import login_widget, logout_widget
-
-try:
-    auth_status = login_widget()  # visible login on main page
-except Exception as e:  # None (widget shown, not yet submitted)
-    # st.error("Username/password incorrect")
-    st.error(str(e))
-    # st.stop()
-
+# try:
+#     auth_status = login_widget()  # visible login on main page
+# except Exception as e:  # None (widget shown, not yet submitted)
+#     # st.error("Username/password incorrect")
+#     st.error(str(e))
+#     # st.stop()
 # #a dd it in sessions tate car
 # if "login" not in st.session_state:
 #     st.session_state["login"] = auth_status
@@ -30,52 +34,91 @@ except Exception as e:  # None (widget shown, not yet submitted)
 # if 'logout' not in st.session_state:
 #     st.session_state['logout'] = False
 
-if st.session_state.get('authentication_status'):
-    logout_widget(key = 'logut_home')
-    st.write(f'Welcome *{st.session_state.get("name")}*')
+PATH = os.path.dirname(__file__)
+# PATH = os.getcwd()
+sys.path.append(PATH)
 
-    PATH = os.path.dirname(__file__)
-    # PATH = os.getcwd()
-    sys.path.append(PATH)
+TEMP_BASE = os.path.join(tempfile.gettempdir(), "mlviewer_uploads")  # e.g. /tmp/mlviewer_uploads
 
-    # global vars
-    DATAPATH = f'{PATH}/data'
-
-    # app
-    st.set_page_config(layout="wide")
-
-    # if __name__ == '__main__':
-    st.write('Select a project from the sidebar to start exploring the data')
-
-    def count_sessions_unsafe():
-        # Find the global Runtime object
-        import gc
-        rt = next(o for o in gc.get_objects() if isinstance(o, Runtime))
-        # Session manager may be accessible like this in some versions:
-        sess_mgr = rt._session_mgr  # private
-        # Each session has websocket(s); count those considered active
-        return len(list(sess_mgr.list_sessions()))  # method name varies by version!
-
-    st.write("Connected sessions:", count_sessions_unsafe())
-
-elif st.session_state.get('authentication_status') is False:
-    st.error('Username/password is incorrect')
-elif st.session_state.get('authentication_status') is None:
-    st.warning('Please enter your username and password')
+# Ensure base temp exists
+os.makedirs(TEMP_BASE, exist_ok=True)
 
 
+def handle_upload_ui():
+    # Prune old session dirs each time the home page loads
+    prune_old_temp_dirs(TEMP_BASE)
 
-# st.sidebar.success(f"Logged in as {name} ({username})")
-# if st.sidebar.button("Log out"):
-#     logout_widget()
-#     st.session_state["logout"] = True
-#     auth_status = False
-#     st.session_state["login"] = False
-#     # st.stop()
-#     # rerun
-#     st.rerun()
-#     # st.experimental_rerun()
+    st.header("Upload dataset (data.zip)")
+    st.write("Upload a zip containing PNGs. Files will be available to you while your session runs. Use 'Finish session button' to remove the zip and/or finish the session.")
 
+    uploaded = st.file_uploader("Upload data.zip", type=["zip"])
+    if uploaded is not None:
+        if st.button("Extract and use this ZIP"):
+            # create a unique session temp dir
+            upload_dir = tempfile.mkdtemp(prefix="mlviewer_", dir=TEMP_BASE)
+            try:
+                zip_bytes = io.BytesIO(uploaded.read())
+                safe_extract_zip_bytes(zip_bytes, upload_dir)
+            except Exception as e:
+                # cleanup on failure
+                try:
+                    shutil.rmtree(upload_dir)
+                except Exception:
+                    pass
+                st.error(f"Failed to extract zip: {e}")
+                return
+
+            # save into session_state for use across pages in this session
+            st.session_state["data_root"] = upload_dir
+            st.success(f"Uploaded and extracted to session folder.")
+            # optional: show some files
+            pngs = []
+            for root, dirs, files in os.walk(upload_dir):
+                for f in files:
+                    if f.lower().endswith(".png"):
+                        pngs.append(os.path.relpath(os.path.join(root, f), upload_dir))
+            st.write(f"Found {len(pngs)} PNG files (session-only).")
+
+    # If already uploaded in this session, show controls
+    data_root = st.session_state.get("data_root")
+    if data_root and os.path.isdir(data_root):
+        st.write("You have an active upload for this session:")
+        st.write(data_root)
+        if st.sidebar.button("Finish session and remove my upload"):
+            try:
+                shutil.rmtree(data_root)
+            except Exception as e:
+                st.warning(f"Could not delete upload directory: {e}")
+            st.session_state.pop("data_root", None)
+            st.success("Your upload was removed.")
+            st.stop()
+
+
+
+#%% app
+
+st.set_page_config(layout="wide")
+
+# if __name__ == '__main__':
+st.write('Select a project from the sidebar to start exploring the data')
+
+def count_sessions_unsafe():
+    # Find the global Runtime object
+    import gc
+    rt = next(o for o in gc.get_objects() if isinstance(o, Runtime))
+    # Session manager may be accessible like this in some versions:
+    sess_mgr = rt._session_mgr  # private
+    # Each session has websocket(s); count those considered active
+    return len(list(sess_mgr.list_sessions()))  # method name varies by version!
+
+st.write("Connected sessions:", count_sessions_unsafe())
+
+handle_upload_ui()
+
+# elif st.session_state.get('authentication_status') is False:
+#     st.error('Username/password is incorrect')
+# elif st.session_state.get('authentication_status') is None:
+#     st.warning('Please enter your username and password')
 
 
     
