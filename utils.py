@@ -57,4 +57,22 @@ def safe_extract_zip_bytes(zip_bytes_io, target_dir):
     return True
 
 
+# acces data folder across pages
+def access_data():
+    data_root = st.session_state.get("data_root")
+    if not data_root or not os.path.isdir(data_root):
+        st.info("No uploaded dataset for this session. Please upload on the Home page.")
+        st.stop()
+    
+    if st.sidebar.button("Finish session and remove my upload"):
+        try:
+            shutil.rmtree(data_root)
+        except Exception as e:
+            st.warning(f"Could not delete upload directory: {e}")
+        st.session_state.pop("data_root", None)
+        st.success("Your upload was removed.")
+        st.stop()
+
+    return data_root
+
 

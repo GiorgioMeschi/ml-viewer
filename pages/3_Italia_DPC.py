@@ -7,37 +7,25 @@ import os
 from PIL import Image
 import shutil
 
-#%%
-
-def access_data():
-    data_root = st.session_state.get("data_root")
-    if not data_root or not os.path.isdir(data_root):
-        st.info("No uploaded dataset for this session. Please upload on the Home page.")
-        st.stop()
-    
-    if st.sidebar.button("Finish session and remove my upload"):
-        try:
-            shutil.rmtree(data_root)
-        except Exception as e:
-            st.warning(f"Could not delete upload directory: {e}")
-        st.session_state.pop("data_root", None)
-        st.success("Your upload was removed.")
-        st.stop()
-
-    return data_root
-
-
 p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
-from utils import plot_img
+from utils import plot_img, access_data
+from stats import generate_ba_stats_plot
+
+#%%
+
 DATAPATH = access_data()
 
-
 # page code
-project_datapath = f'{DATAPATH}/italia-dpc'
+project_datapath = f'{DATAPATH}/data/italia-dpc'
 
-run_dates = sorted([f for f in os.listdir(project_datapath) if f != 'static'])
+if not os.path.isdir(project_datapath):
+    st.error(f"No data availble for this project in your dataset.")
+    st.stop()
+
+
+run_dates = sorted([f for f in os.listdir(project_datapath) if f not in ['static', 'statistics']])
 
 latest = run_dates[0]
 
@@ -48,7 +36,10 @@ if 'run' not in st.session_state:
 def change_run_id():
     return st.session_state.run
 
-run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(st.session_state.run), on_change = change_run_id, key = 'run')
+try:
+    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(st.session_state.run), on_change = change_run_id, key = 'run')
+except ValueError: # handle the first date in session state that is absent in italy
+    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = 0, on_change = change_run_id, key = 'run')
 
 header_cols = st.columns(3)
 with header_cols[1]:
@@ -72,6 +63,16 @@ with columns_1st[1]:
     suscept_path = f'{project_datapath}/{run_date}'
     suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_plot')][0]
     plot_img(f'{suscept_path}/{suscept_img}', img_width)
+
+
+# insert container with stats plot
+with st.expander("Statistics"):
+    stats_path = f'{project_datapath}/statistics/sentinel_ba_over_fuel_classes.csv'
+    if os.path.isfile(stats_path):
+        generate_ba_stats_plot(stats_path)
+    else:
+        st.info("No burned area statistics available for this run.")
+
 
 st.divider()
 
