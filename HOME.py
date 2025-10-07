@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     st.write("Connected sessions:", count_sessions_unsafe())
     st.divider()
-    st.write("To have access to the data, you shold contanct the administrator.\n Data are provided in a zip folder and must be uploaded by the user.")
+    st.write("To have access to the data, you should contact the administrator.\n Data are provided in a zip folder and must be uploaded by the user.")
     st.write("**Note:** Uploaded data is temporary and will be deleted when the session ends or after a period of inactivity.")
     st.divider()
 
