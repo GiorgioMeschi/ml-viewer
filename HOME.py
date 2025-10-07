@@ -30,7 +30,7 @@ def handle_upload_ui():
     prune_old_temp_dirs(TEMP_BASE)
 
     st.header("Upload dataset (data.zip)")
-    st.write("Upload a zip containing PNGs. Files will be available to you while your session runs. Use 'Finish session button' to remove the zip and/or finish the session.")
+    st.write("Upload a file to start exploring the data. Use 'Finish session button' to remove the zip and/or finish the session.")
 
     uploaded = st.file_uploader("Upload data.zip", type=["zip"])
     if uploaded is not None:
@@ -57,7 +57,7 @@ def handle_upload_ui():
     # If already uploaded in this session, show controls
     data_root = st.session_state.get("data_root")
     if data_root and os.path.isdir(data_root):
-        st.write("You have an active upload for this session.")
+        st.info("You have an active upload for this session.")
         # st.write(data_root)
         if st.sidebar.button("Finish session and remove my upload"):
             try:
@@ -75,6 +75,8 @@ def handle_upload_ui():
 if __name__ == "__main__":
 
     st.set_page_config(layout="wide")
+    st.title("**HOME**")
+    st.divider()
     st.write('Select a project from the sidebar to start exploring the data')
 
     def count_sessions_unsafe():
@@ -84,9 +86,13 @@ if __name__ == "__main__":
         # Session manager may be accessible like this in some versions:
         sess_mgr = rt._session_mgr  # private
         # Each session has websocket(s); count those considered active
-        return len(list(sess_mgr.list_sessions()))  # method name varies by version!
+        return len(list(sess_mgr.list_sessions()))  
 
     st.write("Connected sessions:", count_sessions_unsafe())
+    st.divider()
+    st.write("To have access to the data, you shold contanct the administrator.\n Data are provided in a zip folder and must be uploaded by the user.")
+    st.write("**Note:** Uploaded data is temporary and will be deleted when the session ends or after a period of inactivity.")
+    st.divider()
 
     handle_upload_ui()
 

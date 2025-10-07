@@ -5,7 +5,7 @@ import shutil
 import time
 import zipfile
 
-TTL_SECONDS = 60 * 30          # auto-delete uploads older than 30 min when session restart
+TTL_SECONDS = 60 * 60          # auto-delete uploads older than 60 min when session restart
 
 
 def plot_img(path, w = None):
@@ -38,6 +38,9 @@ def prune_old_temp_dirs(temp_base):
         pass
 
 def safe_extract_zip_bytes(zip_bytes_io, target_dir):
+    '''
+    extract zip folder provided by the user.
+    '''
     total = 0
     count = 0
     with zipfile.ZipFile(zip_bytes_io) as zf:
@@ -57,8 +60,11 @@ def safe_extract_zip_bytes(zip_bytes_io, target_dir):
     return True
 
 
-# acces data folder across pages
 def access_data():
+    '''
+    acces data folder across pages
+    '''
+
     data_root = st.session_state.get("data_root")
     if not data_root or not os.path.isdir(data_root):
         st.info("No uploaded dataset for this session. Please upload on the Home page.")
