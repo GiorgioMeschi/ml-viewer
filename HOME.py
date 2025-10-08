@@ -2,6 +2,10 @@
 
 #%% libs
 
+import warnings
+# ignore only warnings whose message contains "st.experimental_user"
+warnings.filterwarnings("ignore", message=".*st.experimental_user.*")
+
 import os
 import io
 import time

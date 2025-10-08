@@ -1,0 +1,17 @@
+name: Keep Streamlit awake
+
+on:
+  schedule:
+    - cron: '0 */8 * * *'   # every 5 minutes (GitHub Actions minimum granularity)
+  workflow_dispatch:        # allows manual run from Actions UI
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Streamlit app
+        env:
+          APP_URL: ${{ secrets.STREAMLIT_APP_URL }}
+        run: |
+          echo "Pinging $APP_URL ($(date -u))"
+          curl -sS --max-time 30 --retry 3 --retry-delay 5 -o /dev/null "$APP_URL" || echo "Ping failed"
