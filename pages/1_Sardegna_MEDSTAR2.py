@@ -13,22 +13,104 @@ sys.path.append(p)
 from utils import plot_img, access_data
 from stats import generate_ba_stats_plot
 
+#%% css funcs
+
+# change color of the clicked button
+# st.markdown(
+#     """
+#     <style>
+#     .pill {
+#       display:inline-block;
+#       padding:6px 12px;
+#       border-radius:999px;
+#       font-weight:600;
+#       font-size:14px;
+#       border:1px solid rgba(0,0,0,0.1);
+#       background:transparent;
+#       color: #222;
+#       margin-top:6px;
+#     }
+#     .pill.active {
+#       background:#0b6cf0;      /* active bg color */
+#       color: white;            /* active text color */
+#       box-shadow:0 2px 6px rgba(11,108,240,0.25);
+#     }
+
+#     .btn-col { text-align:center; }
+#     </style>
+#     """,
+#     unsafe_allow_html=True,
+# )
+
 #%%
-
-
-
 
 
 DATAPATH = access_data()
 
-# page code
-project_datapath = f'{DATAPATH}/data/sardegna-medstar'
+if 'vs' not in st.session_state:
+    st.session_state.vs = None
 
+def set_vs(v):
+    st.session_state.vs = v
+
+# create 2 buttons based on the version you want to view
+vs_selection_cols = st.columns(4)
+with vs_selection_cols[1]:
+    normal_version = st.button('single model Version', on_click = set_vs, args=('Single',), key = 'v1')
+with vs_selection_cols[2]:
+    models_version = st.button('4-models Version',  on_click = set_vs, args=('4-Models',), key = 'v2')
+
+vs = st.session_state.vs
+
+if vs == 'Single':
+    project_datapath = f'{DATAPATH}/data/sardegna-medstar'
+    if not os.path.isdir(project_datapath):
+        st.error(f"No data availble for this project in your dataset.")
+        st.stop()
+
+    # change color if selected
+    css = '''
+    .stElementContainer.element-container.st-key-v1.st-emotion-cache-zh2fnc.eceldm40 {
+        background-color: yellow !important;
+        color: red;
+        
+    }
+    .stButton.st-emotion-cache-8atqhb.e1mlolmg0 {
+        opacity: 0.8;
+        }'''
+    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
+elif vs == '4-Models':
+    project_datapath = f'{DATAPATH}/data/sardegna-medstar/4models'
+    if not os.path.isdir(project_datapath):
+        st.error(f"No data availble for this project in your dataset.")
+        st.stop()
+    
+    # change color if selected
+    css = '''
+    .stElementContainer.element-container.st-key-v2.st-emotion-cache-zh2fnc.eceldm40 {
+        background-color: yellow !important;
+        color: red;
+        
+    }
+    .stButton.st-emotion-cache-8atqhb.e1mlolmg0 {
+        opacity: 0.8;
+        }'''
+
+    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
+else:
+    project_datapath = f'{DATAPATH}/data/-'  # default
+
+
+# st.write("Selected version:", vs)
+# st.write("Selected version:", project_datapath)
 if not os.path.isdir(project_datapath):
-    st.error(f"No data availble for this project in your dataset.")
+    st.info(f"select a model version to proceed")
     st.stop()
 
 # else:
+# st.write("Selected version:", vs)
 
 run_dates = sorted([f for f in os.listdir(project_datapath) if f not in ['static', 'statistics']])
 latest = run_dates[0]
