@@ -12,7 +12,7 @@ p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
 from utils import plot_img, access_data
-from stats import generate_ba_stats_plot, show_table
+from stats import generate_ba_stats_plot, show_table, plot_historical_stats
 
 
 #%%
@@ -215,10 +215,16 @@ with st.expander("View Historical Stats Table"):
             table_file = f'{project_datapath}/statistics/table_ba_susc_perc.csv'
             rounds = 2
             show_table(table_file, rounds)
+            with st.expander("Plot Historical Stats"):
+                plot_historical_stats(pd.read_csv(table_file, index_col=0))
         else:
             table_file = f'{project_datapath}/statistics/table_ba_susc.csv'
             rounds = 0
             show_table(table_file, rounds)
+            with st.expander("Plot Historical Stats"):
+                plot_historical_stats(pd.read_csv(table_file, index_col=0))
+        
+        
 
 
 
