@@ -11,7 +11,7 @@ p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
 from utils import plot_img, access_data
-from stats import generate_ba_stats_plot
+from stats import generate_ba_stats_plot, show_table
 
 #%%
 
@@ -125,6 +125,22 @@ with columns_4th[3]:
     plot_img(aspect_path, img_width_1)
 
 
+with st.expander("View Historical Stats Table"):
+
+    # create 3 columsn the ceter 75% wide
+    endcols = st.columns([1,6,1])
+    with endcols[1]:
+
+        # radio button with showing the table in percentage or not
+        show_perc = st.radio("Show values as percentage?", ('No', 'Yes'), index=0, horizontal=True)
+        if show_perc == 'Yes':
+            table_file = f'{project_datapath}/statistics/table_ba_susc_perc.csv'
+            rounds = 2
+            show_table(table_file, rounds)
+        else:
+            table_file = f'{project_datapath}/statistics/table_ba_susc.csv'
+            rounds = 0
+            show_table(table_file, rounds)
 
 
 

@@ -52,3 +52,17 @@ def generate_ba_stats_plot(path):
     )
 
     st.caption("Fuel class distribution in sentinel2 burned area from Autobam")
+
+
+# read and use the first column as index (the leading empty header column)
+def show_table(path, rounds):
+    if not os.path.isfile(path):
+        st.info("No historical statistics available for this version/project.")
+        return
+    df = pd.read_csv(path, index_col=0)
+    df = df.apply(pd.to_numeric, errors='coerce')
+    df = df.round(rounds) # round 2 decimanls
+    st.subheader('Burned Area vs Susceptibility Classes')
+    st.dataframe(df.T, height=450)   # interactive, scrollable
+
+

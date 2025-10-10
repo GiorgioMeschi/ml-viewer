@@ -6,41 +6,14 @@ import sys
 import os
 from PIL import Image
 import shutil 
+import pandas as pd
 
 p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
 from utils import plot_img, access_data
-from stats import generate_ba_stats_plot
+from stats import generate_ba_stats_plot, show_table
 
-#%% css funcs
-
-# change color of the clicked button
-# st.markdown(
-#     """
-#     <style>
-#     .pill {
-#       display:inline-block;
-#       padding:6px 12px;
-#       border-radius:999px;
-#       font-weight:600;
-#       font-size:14px;
-#       border:1px solid rgba(0,0,0,0.1);
-#       background:transparent;
-#       color: #222;
-#       margin-top:6px;
-#     }
-#     .pill.active {
-#       background:#0b6cf0;      /* active bg color */
-#       color: white;            /* active text color */
-#       box-shadow:0 2px 6px rgba(11,108,240,0.25);
-#     }
-
-#     .btn-col { text-align:center; }
-#     </style>
-#     """,
-#     unsafe_allow_html=True,
-# )
 
 #%%
 
@@ -122,7 +95,10 @@ if 'run' not in st.session_state:
 def change_run_id():
     return st.session_state.run
 
-run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(st.session_state.run), on_change = change_run_id, key = 'run')
+try:
+    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(st.session_state.run), on_change = change_run_id, key = 'run')
+except ValueError: # handle the first date in session state that is absent in 1 version
+    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = 0, on_change = change_run_id, key = 'run')
 
 header_cols = st.columns(3)
 with header_cols[1]:
@@ -224,6 +200,32 @@ with columns_4th[3]:
     st.subheader('Aspect')
     aspect_path = f'{static_path}/Aspect.png'
     plot_img(aspect_path, img_width_1)
+
+
+
+with st.expander("View Historical Stats Table"):
+
+    # create 3 columsn the ceter 75% wide
+    endcols = st.columns([1,6,1])
+    with endcols[1]:
+
+        # radio button with showing the table in percentage or not
+        show_perc = st.radio("Show values as percentage?", ('No', 'Yes'), index=0, horizontal=True)
+        if show_perc == 'Yes':
+            table_file = f'{project_datapath}/statistics/table_ba_susc_perc.csv'
+            rounds = 2
+            show_table(table_file, rounds)
+        else:
+            table_file = f'{project_datapath}/statistics/table_ba_susc.csv'
+            rounds = 0
+            show_table(table_file, rounds)
+
+
+
+
+  
+    
+
 
 
 
