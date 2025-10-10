@@ -6,6 +6,7 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+import os
 
 # load your table (or replace with your existing DataFrame variable)
 @st.cache_data
@@ -56,6 +57,7 @@ def generate_ba_stats_plot(path):
 
 # read and use the first column as index (the leading empty header column)
 def show_table(path, rounds):
+
     if not os.path.isfile(path):
         st.info("No historical statistics available for this version/project.")
         return
