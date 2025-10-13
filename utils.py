@@ -5,7 +5,7 @@ import shutil
 import time
 import zipfile
 
-TTL_SECONDS = 60 * 60          # auto-delete uploads older than 60 min when session restart
+TTL_SECONDS = 60 * 60 * 6         # auto-delete uploads older than 6 hours when session restart
 
 
 def plot_img(path, w = None):
