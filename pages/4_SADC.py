@@ -70,9 +70,10 @@ with ba_cols[1]:
     y = int(run_date.split('-')[0])
     if y == 2024:
         ba_path = f'{project_datapath}/ba/BA_{m}.png'
+        plot_img(ba_path, 600)
     else:
-        ba_path = f'{project_datapath}/ba/-.png'  # for 2023 show december
-    plot_img(ba_path, 600)
+        pass 
+   
 
     
 
@@ -120,14 +121,16 @@ with st.expander("View Historical Stats Table"):
         if show_perc == 'Yes':
             table_file = f'{project_datapath}/statistics/table_ba_susc_perc.csv'
             rounds = 2
-            show_table(table_file, rounds)
-            with st.expander("Plot Historical Stats"):
-                plot_historical_stats(pd.read_csv(table_file, index_col=0))
+            available = show_table(table_file, rounds)
+            if available:
+                with st.expander("Plot Historical Stats"):
+                    plot_historical_stats(pd.read_csv(table_file, index_col=0))
 
         else:
             table_file = f'{project_datapath}/statistics/table_ba_susc.csv'
             rounds = 0
-            show_table(table_file, rounds)
-            with st.expander("Plot Historical Stats"):
-                plot_historical_stats(pd.read_csv(table_file, index_col=0))
+            available = show_table(table_file, rounds)
+            if available:
+                with st.expander("Plot Historical Stats"):
+                    plot_historical_stats(pd.read_csv(table_file, index_col=0))
 

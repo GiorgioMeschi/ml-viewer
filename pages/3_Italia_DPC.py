@@ -138,16 +138,18 @@ with st.expander("View Historical Stats Table"):
         if show_perc == 'Yes':
             table_file = f'{project_datapath}/statistics/table_ba_susc_perc.csv'
             rounds = 2
-            show_table(table_file, rounds)
-            with st.expander("Plot Historical Stats"):
-                plot_historical_stats(pd.read_csv(table_file, index_col=0))
+            available = show_table(table_file, rounds)
+            if available:
+                with st.expander("Plot Historical Stats"):
+                    plot_historical_stats(pd.read_csv(table_file, index_col=0))
 
         else:
             table_file = f'{project_datapath}/statistics/table_ba_susc.csv'
             rounds = 0
-            show_table(table_file, rounds)
-            with st.expander("Plot Historical Stats"):
-                plot_historical_stats(pd.read_csv(table_file, index_col=0))
+            available = show_table(table_file, rounds)
+            if available:
+                with st.expander("Plot Historical Stats"):
+                    plot_historical_stats(pd.read_csv(table_file, index_col=0))
 
 
 
