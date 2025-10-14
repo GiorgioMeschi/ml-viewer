@@ -53,7 +53,7 @@ def generate_ba_stats_plot(path):
         ).properties(height=320, width=300)
     )
 
-    st.caption("Fuel class distribution in sentinel2 burned area from Autobam")
+    
 
 
 # show large table of stast of historical data

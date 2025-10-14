@@ -37,8 +37,11 @@ if 'run' not in st.session_state:
 def change_run_id():
     return st.session_state.run
 
-run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(st.session_state.run), on_change = change_run_id, key = 'run')
-
+try:
+    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(st.session_state.run), on_change = change_run_id, key = 'run')
+except ValueError: # handle the first date in session state that is absent in italy
+    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = 0, on_change = change_run_id, key = 'run')
+    
 header_cols = st.columns(3)
 with header_cols[1]:
     st.header('Calabria FIRE-SCENE')
@@ -68,6 +71,7 @@ with st.expander("Statistics"):
     stats_path = f'{project_datapath}/statistics/sentinel_ba_over_fuel_classes.csv'
     if os.path.isfile(stats_path):
         generate_ba_stats_plot(stats_path)
+        st.caption("Fuel class distribution in sentinel2 burned area from Autobam")
     else:
         st.info("No burned area statistics available for this run.")
 

@@ -1,6 +1,4 @@
 
-#%%
-
 import streamlit as st
 import sys
 import os
@@ -19,14 +17,14 @@ from stats import generate_ba_stats_plot, show_table, plot_historical_stats
 DATAPATH = access_data()
 
 # page code
-project_datapath = f'{DATAPATH}/data/italia-dpc'
+project_datapath = f'{DATAPATH}/data/sadc'
 
 if not os.path.isdir(project_datapath):
     st.error(f"No data availble for this project in your dataset.")
     st.stop()
 
 
-run_dates = sorted([f for f in os.listdir(project_datapath) if f not in ['static', 'statistics']])
+run_dates = sorted([f for f in os.listdir(project_datapath) if f not in ['static', 'statistics', 'ba']])
 
 latest = run_dates[0]
 
@@ -44,7 +42,7 @@ except ValueError: # handle the first date in session state that is absent in it
 
 header_cols = st.columns(3)
 with header_cols[1]:
-    st.header('Italia 2025 DPC')
+    st.header('Africa Union')
 
 st.divider()
 
@@ -66,12 +64,23 @@ with columns_1st[1]:
     plot_img(f'{suscept_path}/{suscept_img}', img_width)
 
 
-# insert container with stats plot
+ba_cols = st.columns([0.2,0.6,0.2])
+with ba_cols[1]:
+    m = int(run_date.split('-')[1])+1
+    y = int(run_date.split('-')[0])
+    if y == 2024:
+        ba_path = f'{project_datapath}/ba/BA_{m}.png'
+    else:
+        ba_path = f'{project_datapath}/ba/-.png'  # for 2023 show december
+    plot_img(ba_path, 600)
+
+    
+
 with st.expander("Statistics"):
     stats_path = f'{project_datapath}/statistics/sentinel_ba_over_fuel_classes.csv'
     if os.path.isfile(stats_path):
         generate_ba_stats_plot(stats_path)
-        st.caption("Fuel class distribution in sentinel2 burned area from Autobam")
+        st.caption("Fuel class distribution for the year 2024")
     else:
         st.info("No burned area statistics available for this run.")
 
@@ -99,33 +108,6 @@ with columns_2nd[2]:
     plot_img(spi6_path, img_width_1)
 
 
-st.divider()
-
-static_path = f'{project_datapath}/static'
-columns_4th = st.columns(4)
-
-with columns_4th[0]:
-    st.subheader('DEM')
-    dem_path = f'{static_path}/DEM.png'
-    plot_img(dem_path, img_width_1)
-
-with columns_4th[1]:
-    st.subheader('Vegetation')
-    veg_path = f'{static_path}/vegetation.png'
-    plot_img(veg_path, img_width_1)
-
-with columns_4th[2]:
-    # slope
-    st.subheader('Slope')
-    slope_path = f'{static_path}/Slope.png'
-    plot_img(slope_path, img_width_1)
-
-with columns_4th[3]:
-    # aspect
-    st.subheader('Aspect')
-    aspect_path = f'{static_path}/Aspect.png'
-    plot_img(aspect_path, img_width_1)
-
 
 with st.expander("View Historical Stats Table"):
 
@@ -148,8 +130,4 @@ with st.expander("View Historical Stats Table"):
             show_table(table_file, rounds)
             with st.expander("Plot Historical Stats"):
                 plot_historical_stats(pd.read_csv(table_file, index_col=0))
-
-
-
-
 

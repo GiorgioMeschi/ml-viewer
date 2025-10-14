@@ -129,6 +129,7 @@ with st.expander("Statistics"):
     stats_path = f'{project_datapath}/statistics/sentinel_ba_over_fuel_classes.csv'
     if os.path.isfile(stats_path):
         generate_ba_stats_plot(stats_path)
+        st.caption("Fuel class distribution in sentinel2 burned area from Autobam")
     else:
         st.info("No burned area statistics available for this run.")
 
