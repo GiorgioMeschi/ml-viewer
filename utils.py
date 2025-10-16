@@ -5,6 +5,7 @@ import shutil
 import time
 import zipfile
 import pandas as pd
+import sys
 
 p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
