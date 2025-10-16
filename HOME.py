@@ -95,6 +95,9 @@ if __name__ == "__main__":
     st.write("Connected sessions:", count_sessions_unsafe())
     st.divider()
     st.write("To have access to the data, you should contact the administrator.\n Data are provided in a zip folder and must be uploaded by the user.")
+    # add link
+    link = 'https://cimafoundation.sharepoint.com/:f:/s/AmbitoIncendi/EnZ_tObryKxCteu4VKFAJVkB7DEDPKWwkTdAGOGIUsb8Yg?e=Z6kABK'
+    st.markdown(f"👉 link to private [data]({link})", unsafe_allow_html=True)
     st.write("**Note:** Uploaded data is temporary and will be deleted when the session ends or after a period of inactivity.")
     st.divider()
 
