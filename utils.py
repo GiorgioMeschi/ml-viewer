@@ -6,6 +6,8 @@ import time
 import zipfile
 import pandas as pd
 
+p = os.path.dirname(os.path.dirname(__file__) )
+sys.path.append(p)
 
 from stats import show_table, plot_historical_stats
 
