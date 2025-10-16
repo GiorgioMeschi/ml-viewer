@@ -4,15 +4,13 @@
 import streamlit as st
 import sys
 import os
-from PIL import Image
-import shutil
-import pandas as pd
+
 
 p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
-from utils import plot_img, access_data
-from stats import generate_ba_stats_plot, show_table, plot_historical_stats
+from utils import plot_img, access_data, show_burned_pixel_per_susc_class
+from stats import generate_ba_stats_plot
 
 #%%
 
@@ -127,29 +125,9 @@ with columns_4th[3]:
     plot_img(aspect_path, img_width_1)
 
 
-with st.expander("View Historical Stats Table"):
 
-    # create 3 columsn the ceter 75% wide
-    endcols = st.columns([1,6,1])
-    with endcols[1]:
+show_burned_pixel_per_susc_class(project_datapath)
 
-        # radio button with showing the table in percentage or not
-        show_perc = st.radio("Show values as percentage?", ('No', 'Yes'), index=0, horizontal=True)
-        if show_perc == 'Yes':
-            table_file = f'{project_datapath}/statistics/table_ba_susc_perc.csv'
-            rounds = 2
-            available = show_table(table_file, rounds)
-            if available:
-                with st.expander("Plot Historical Stats"):
-                    plot_historical_stats(pd.read_csv(table_file, index_col=0))
-
-        else:
-            table_file = f'{project_datapath}/statistics/table_ba_susc.csv'
-            rounds = 0
-            available = show_table(table_file, rounds)
-            if available:
-                with st.expander("Plot Historical Stats"):
-                    plot_historical_stats(pd.read_csv(table_file, index_col=0))
 
 
 

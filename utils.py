@@ -4,6 +4,10 @@ import os
 import shutil
 import time
 import zipfile
+import pandas as pd
+
+
+from stats import show_table, plot_historical_stats
 
 TTL_SECONDS = 60 * 60 * 6         # auto-delete uploads older than 6 hours when session restart
 
@@ -82,3 +86,31 @@ def access_data():
     return data_root
 
 
+def show_burned_pixel_per_susc_class(project_datapath):
+
+    with st.expander("View Historical Stats"):
+
+        # create 3 columsn the ceter 75% wide
+        endcols = st.columns([1,6,1])
+        with endcols[1]:
+
+            # radio button with showing the table in percentage or not
+            st.subheader('Number of burned pixels per susceptibility class')
+            show_perc = st.radio("Show values as percentage?", ('No', 'Yes'), index=0, horizontal=True)
+            if show_perc == 'Yes':
+                with st.expander("Show Table"):
+                    table_file = f'{project_datapath}/statistics/table_ba_susc_perc.csv'
+                    rounds = 2
+                    available = show_table(table_file, rounds)
+                if available:
+                    with st.expander("Plot Historical Stats"):
+                        plot_historical_stats(pd.read_csv(table_file, index_col=0))
+
+            else:
+                with st.expander("Show Table"):
+                    table_file = f'{project_datapath}/statistics/table_ba_susc.csv'
+                    rounds = 0
+                    available = show_table(table_file, rounds)
+                if available:
+                    with st.expander("Plot Historical Stats"):
+                        plot_historical_stats(pd.read_csv(table_file, index_col=0))
