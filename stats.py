@@ -235,12 +235,28 @@ def fuel_pie(project_datapath, run_date):
         # fuel_perc = [f'{f}%' for f in fuel_perc]
         all_colors = {"1": "#99ff99", "2": "#00ff00", "3": "#006600", "4": "#ffff99", "5": "#ffff00", "6": "#cc9900", "7": "#cc99ff",
                     "8": "#9933cc", "9": "#660099", "10": "#f55b5b", "11": "#ff0000", "12": "#990000"}
+        
+        all_names =  [       "Low intensity surface fires\n with low likelihood",
+                            "Low intensity surface fires\n with medium likelihood",
+                            "Low intensity surface fires\n with high likelihood",
+                            "Medium intensity forest fires\n with low likelihood (broadleaves forests)",
+                            "Medium intensity forest fires\n with medium likelihood (broadleaves forests)",
+                            "Medium intensity forest fires\n with high likelihood (broadleaves forests)",
+                            "High intensity bushfire\n with low likelihood",
+                            "High intensity bushfire\n with medium likelihood",
+                            "High intensity bushfire\n with high likelihood",
+                            "High intensity forest fires\n with low likelihood (coniferous forests)",
+                            "High intensity forest fires\n with medium likelihood (coniferous forests)",
+                            "High intensity forest fires\n with high likelihood (coniferous forests)"
+        ]
+
+
         # create dict dataset from classes, perc and colors
         dataset = []
-        for cl, value in zip(fuel_classes, fuel_perc):
-            dataset.append({"id": cl, "value": value,"color": all_colors[str(cl)]})
+        for cl, value, name in zip(fuel_classes, fuel_perc, all_names):
+            dataset.append({"id": cl, "value": value, "label": name, "color": all_colors[str(cl)]})
 
-        layout = [dashboard.Item("pie", 0, 0, 6, 8)]
+        layout = [dashboard.Item("pie", 0, 0, 10, 8)]
         with elements("fuel_pie_chart"):
             with dashboard.Grid(layout, rowHeight=50):
                 with mui.Paper(key="pie", sx={"height": "100%", "minHeight": "320px", "display": "flex", "alignItems": "stretch"}):
@@ -249,7 +265,7 @@ def fuel_pie(project_datapath, run_date):
                         # tell Nivo to read the color from each datum: datum.data.color
                         colors={"datum": "data.color"},
                         colorBy="id",
-                        margin={"top": 50, "right": 140, "bottom": 40, "left": 60},
+                        margin={"top": 50, "right": 260, "bottom": 40, "left": -20},
                         innerRadius=0.45,
                         padAngle=0.6,
                         cornerRadius=3,
@@ -263,7 +279,7 @@ def fuel_pie(project_datapath, run_date):
                         legends=[{
                             "anchor": "right",
                             "direction": "column",
-                            "translateX": 180,
+                            "translateX": 10,
                             "itemWidth": 140,
                             "itemHeight": 20,
                             "symbolSize": 12,
