@@ -43,7 +43,7 @@ except ValueError: # handle the first date in session state that is absent in it
 
 header_cols = st.columns([1,2,1])
 with header_cols[1]:
-    st.header('Ethiopia MEDWESA 2025')
+    st.header('Ethiopia MEDEWSA 2025')
 
 st.divider()
 
