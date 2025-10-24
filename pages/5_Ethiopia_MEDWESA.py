@@ -1,8 +1,11 @@
+
 #%%
 
 import streamlit as st
 import sys
 import os
+
+
 
 p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
@@ -12,11 +15,10 @@ from stats import generate_ba_stats_plot, fuel_pie
 
 #%%
 
-
 DATAPATH = access_data()
 
 # page code
-project_datapath = f'{DATAPATH}/data/calabria-firescene'
+project_datapath = f'{DATAPATH}/data/ethiopia-medwesa'
 
 if not os.path.isdir(project_datapath):
     st.error(f"No data availble for this project in your dataset.")
@@ -38,10 +40,10 @@ try:
     run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(st.session_state.run), on_change = change_run_id, key = 'run')
 except ValueError: # handle the first date in session state that is absent in italy
     run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = 0, on_change = change_run_id, key = 'run')
-    
-header_cols = st.columns(3)
+
+header_cols = st.columns([1,2,1])
 with header_cols[1]:
-    st.header('Calabria FIRE-SCENE')
+    st.header('Ethiopia MEDWESA 2025')
 
 st.divider()
 
@@ -64,11 +66,12 @@ with columns_1st[1]:
 
 
 # add toggle object - fuel map distribibution
-fuel_chart = st.toggle("Show Fuel Class Distribution Pie Chart", key="show_fuel_pie")
+fuel_chart = st.toggle("Show Fuel Class Distribution Pie Chart", key="show_fuel_pie_page5")
 
 if fuel_chart:
     fuel_pie(project_datapath, run_date)
 
+# st.divider()
 
 
 # insert container with stats plot
@@ -78,7 +81,7 @@ with st.expander("Statistics"):
         generate_ba_stats_plot(stats_path)
         st.caption("Fuel class distribution in sentinel2 burned area from Autobam")
     else:
-        st.info("No burned area statistics available for this run.")
+        st.info("No fire data for validate the year 2025 available yet...")
 
 
 st.divider()
@@ -86,6 +89,7 @@ st.divider()
 img_width_1 = st.slider(" ", min_value=200, max_value=700, value=550)
 
 columns_2nd = st.columns(3)
+
 
 spinames = os.listdir(f'{project_datapath}/{run_date}')
 with columns_2nd[0]:
@@ -106,24 +110,6 @@ with columns_2nd[2]:
     spi6_path = f'{project_datapath}/{run_date}/{spiname}'
     plot_img(spi6_path, img_width_1)
 
-st.divider()
-
-columns_3rd = st.columns(3)
-
-with columns_3rd[0]:
-    st.subheader('SPEI 1')
-    spei1_path = f'{project_datapath}/{run_date}/SPEI1_{run_date}.png'
-    plot_img(spei1_path, img_width_1)
-
-with columns_3rd[1]:
-    st.subheader('SPEI 3')
-    spei3_path = f'{project_datapath}/{run_date}/SPEI3_{run_date}.png'
-    plot_img(spei3_path, img_width_1)
-
-with columns_3rd[2]:
-    st.subheader('SPEI 6')
-    spei6_path = f'{project_datapath}/{run_date}/SPEI6_{run_date}.png'
-    plot_img(spei6_path, img_width_1)
 
 st.divider()
 
@@ -153,7 +139,13 @@ with columns_4th[3]:
     plot_img(aspect_path, img_width_1)
 
 
+
 show_burned_pixel_per_susc_class(project_datapath)
+
+
+st.divider()
+
+
 
 
 

@@ -8,7 +8,7 @@ p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
 from utils import plot_img, access_data, show_burned_pixel_per_susc_class
-from stats import generate_ba_stats_plot
+from stats import generate_ba_stats_plot, fuel_pie
 
 #%%
 
@@ -62,6 +62,13 @@ with columns_1st[1]:
     plot_img(f'{suscept_path}/{suscept_img}', img_width)
 
 
+# add toggle object - fuel map distribibution
+fuel_chart = st.toggle("Show Fuel Class Distribution Pie Chart", key="show_fuel_pie")
+
+if fuel_chart:
+    fuel_pie(project_datapath, run_date)
+
+
 ba_cols = st.columns([0.2,0.6,0.2])
 with ba_cols[1]:
     m = int(run_date.split('-')[1])+1
@@ -88,20 +95,23 @@ img_width_1 = st.slider(" ", min_value=200, max_value=700, value=550)
 
 columns_2nd = st.columns(3)
 
-
+spinames = os.listdir(f'{project_datapath}/{run_date}')
 with columns_2nd[0]:
     st.subheader('SPI 1')
-    spi1_path = f'{project_datapath}/{run_date}/SPI1_{run_date}.png'
+    spiname = [f for f in spinames if f.startswith('SPI1_')][0]
+    spi1_path = f'{project_datapath}/{run_date}/{spiname}'
     plot_img(spi1_path, img_width_1)
 
 with columns_2nd[1]:
     st.subheader('SPI 3')
-    spi3_path = f'{project_datapath}/{run_date}/SPI3_{run_date}.png'
+    spiname = [f for f in spinames if f.startswith('SPI3_')][0]
+    spi3_path = f'{project_datapath}/{run_date}/{spiname}'
     plot_img(spi3_path, img_width_1)
 
 with columns_2nd[2]:
     st.subheader('SPI 6')
-    spi6_path = f'{project_datapath}/{run_date}/SPI6_{run_date}.png'
+    spiname = [f for f in spinames if f.startswith('SPI6_')][0]
+    spi6_path = f'{project_datapath}/{run_date}/{spiname}'
     plot_img(spi6_path, img_width_1)
 
 

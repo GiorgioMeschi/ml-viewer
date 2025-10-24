@@ -5,15 +5,13 @@ import streamlit as st
 import sys
 import os
 
-import pandas as pd
-from streamlit_elements import elements, dashboard, mui, nivo
 
 
 p = os.path.dirname(os.path.dirname(__file__) )
 sys.path.append(p)
 
 from utils import plot_img, access_data, show_burned_pixel_per_susc_class
-from stats import generate_ba_stats_plot
+from stats import generate_ba_stats_plot, fuel_pie
 
 #%%
 
@@ -67,58 +65,11 @@ with columns_1st[1]:
     plot_img(f'{suscept_path}/{suscept_img}', img_width)
 
 
-# add toggle object
+# add toggle object - fuel map distribibution
 fuel_chart = st.toggle("Show Fuel Class Distribution Pie Chart", key="show_fuel_pie")
 
 if fuel_chart:
-    try:
-        fuel_area_file = f'{project_datapath}/{run_date}/fuel_percentage.csv'
-        fuel_area = pd.read_csv(fuel_area_file)
-        fuel_classes = fuel_area['Fuel_Class'].tolist()
-        fuel_perc = fuel_area['Percentage'].tolist()
-        # fuel_perc = [f'{f}%' for f in fuel_perc]
-        all_colors = {"1": "#99ff99", "2": "#00ff00", "3": "#006600", "4": "#ffff99", "5": "#ffff00", "6": "#cc9900", "7": "#cc99ff",
-                    "8": "#9933cc", "9": "#660099", "10": "#f55b5b", "11": "#ff0000", "12": "#990000"}
-        # create dict dataset from classes, perc and colors
-        dataset = []
-        for cl, value in zip(fuel_classes, fuel_perc):
-            dataset.append({"id": cl, "value": value, "color": all_colors[str(cl)]})
-
-        layout = [dashboard.Item("pie", 0, 0, 6, 8)]
-        with elements("fuel_pie_chart"):
-            with dashboard.Grid(layout, rowHeight=50):
-                with mui.Paper(key="pie", sx={"height": "100%", "minHeight": "320px", "display": "flex", "alignItems": "stretch"}):
-                    nivo.Pie(
-                        data=dataset,
-                        # tell Nivo to read the color from each datum: datum.data.color
-                        colors={"datum": "data.color"},
-                        colorBy="id",
-                        margin={"top": 50, "right": 140, "bottom": 40, "left": 60},
-                        innerRadius=0.45,
-                        padAngle=0.6,
-                        cornerRadius=3,
-                        enableArcLabels=True,
-                        arcLabelsSkipAngle=8,
-                        enableArcLinkLabels=True,
-                        arcLinkLabelsOffset=10,
-                        arcLinkLabelsDiagonalLength=16,
-                        arcLinkLabelsStraightLength=24,
-                        arcLinkLabelsTextColor={"from": "color", "modifiers": [["darker", 1.6]]},
-                        legends=[{
-                            "anchor": "right",
-                            "direction": "column",
-                            "translateX": 180,
-                            "itemWidth": 140,
-                            "itemHeight": 20,
-                            "symbolSize": 12,
-                        }],
-                        # add % to labels
-                        tooltip=lambda datum: f"{datum['id']}: {datum['value']}%"
-                    )
-                
-    except Exception as e:
-        st.info('no data available to show')
-
+    fuel_pie(project_datapath, run_date)
 
 # insert container with stats plot
 with st.expander("Statistics"):
@@ -136,20 +87,23 @@ img_width_1 = st.slider(" ", min_value=200, max_value=700, value=550)
 
 columns_2nd = st.columns(3)
 
-
+spinames = os.listdir(f'{project_datapath}/{run_date}')
 with columns_2nd[0]:
     st.subheader('SPI 1')
-    spi1_path = f'{project_datapath}/{run_date}/SPI1_{run_date}.png'
+    spiname = [f for f in spinames if f.startswith('SPI1_')][0]
+    spi1_path = f'{project_datapath}/{run_date}/{spiname}'
     plot_img(spi1_path, img_width_1)
 
 with columns_2nd[1]:
     st.subheader('SPI 3')
-    spi3_path = f'{project_datapath}/{run_date}/SPI3_{run_date}.png'
+    spiname = [f for f in spinames if f.startswith('SPI3_')][0]
+    spi3_path = f'{project_datapath}/{run_date}/{spiname}'
     plot_img(spi3_path, img_width_1)
 
 with columns_2nd[2]:
     st.subheader('SPI 6')
-    spi6_path = f'{project_datapath}/{run_date}/SPI6_{run_date}.png'
+    spiname = [f for f in spinames if f.startswith('SPI6_')][0]
+    spi6_path = f'{project_datapath}/{run_date}/{spiname}'
     plot_img(spi6_path, img_width_1)
 
 
