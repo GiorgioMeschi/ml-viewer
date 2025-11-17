@@ -20,15 +20,8 @@ DATAPATH = access_data()
 if 'vs_it' not in st.session_state:
     st.session_state.vs_it = None
 
-# if 'susc' not in st.session_state:
-#     st.session_state.susc = None
-
 def set_vs(v):
     st.session_state.vs_it = v
-
-# def set_susc(s):
-#     st.session_state.susc = s
-
 
 # create 2 buttons based on the version you want to view
 vs_selection_cols = st.columns(4)
@@ -88,10 +81,8 @@ if not os.path.isdir(project_datapath):
 
 
 run_dates = sorted([f for f in os.listdir(project_datapath) if f not in ['static', 'statistics']])
-# force order of the runs based on month
-if vs_it == '4-Models':
-    # xxxx-m: sort based on the xxxx and then -m 
-    run_dates = sorted(run_dates, key=lambda x: (int(x.split('-')[0]), int(x.split('-')[1])))
+# force order of the runs based on month   
+run_dates = sorted(run_dates, key=lambda x: (int(x.split('-')[0]), int(x.split('-')[1]))) # xxxx-m: sort based on the xxxx and then -m 
 latest = run_dates[0]
 
 # initiate the country selection 
