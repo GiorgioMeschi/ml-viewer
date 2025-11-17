@@ -80,7 +80,7 @@ if not os.path.isdir(project_datapath):
     st.stop()
 
 
-run_dates = sorted([f for f in os.listdir(project_datapath) if f not in ['static', 'statistics']])
+run_dates = sorted([f for f in os.listdir(project_datapath) if f not in ['static', 'statistics', '4models']])
 # force order of the runs based on month   
 run_dates = sorted(run_dates, key=lambda x: (int(x.split('-')[0]), int(x.split('-')[1]))) # xxxx-m: sort based on the xxxx and then -m 
 latest = run_dates[0]
