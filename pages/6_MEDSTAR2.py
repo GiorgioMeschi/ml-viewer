@@ -47,7 +47,7 @@ else:
     tooltip = folium.GeoJsonTooltip(fields=["nome_comun", col],
                                     aliases=['comune', col], localize=True)
 
-    folium.GeoJson(gdf.to_json(), name="Risk Liguria", style_function=style_fn, tooltip=tooltip).add_to(m)
+    folium.GeoJson(gdf.to_json(), name="Risk Liguria", style_function=style_fn, tooltip=tooltip, prefer_canvas=True).add_to(m) #prefer_canvas can speed up the loading 
     cmap.add_to(m)
     folium.LayerControl().add_to(m)
 

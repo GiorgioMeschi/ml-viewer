@@ -228,7 +228,10 @@ def plot_historical_stats(df):
 
 def fuel_pie(project_datapath, run_date):
     try:
-        fuel_area_file = f'{project_datapath}/{run_date}/fuel_percentage.csv'
+        fuel_area_folder = f'{project_datapath}/{run_date}'
+        fuel_area_filenames = os.listdir(fuel_area_folder)
+        fuel_area_filename = [f for f in fuel_area_filenames if f.startswith('fuel_percentage')][0]
+        fuel_area_file = f'{fuel_area_folder}/{fuel_area_filename}'
         fuel_area = pd.read_csv(fuel_area_file)
         fuel_classes = fuel_area['Fuel_Class'].tolist()
         fuel_perc = fuel_area['Percentage'].tolist()
