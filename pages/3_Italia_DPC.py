@@ -58,7 +58,7 @@ elif vs_it == '4-Models':
     
     # change color if selected
     css = '''
-    ..stElementContainer.element-container.st-key-v_2.st-emotion-cache-zh2fnc.eceldm40 {
+    .stElementContainer.element-container.st-key-v_2.st-emotion-cache-zh2fnc.eceldm40 {
         background-color: yellow !important;
         color: red;
         
