@@ -83,7 +83,7 @@ if not os.path.isdir(project_datapath):
 run_dates = sorted([f for f in os.listdir(project_datapath) if f not in ['static', 'statistics', '4models']])
 # force order of the runs based on month   
 run_dates = sorted(run_dates, key=lambda x: (int(x.split('-')[0]), int(x.split('-')[1]))) # xxxx-m: sort based on the xxxx and then -m 
-latest = run_dates[0]
+latest = run_dates[-1]
 
 # initiate the country selection 
 if 'run' not in st.session_state:
@@ -94,10 +94,8 @@ def change_run_id():
 
 try:
     run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(st.session_state.run), on_change = change_run_id, key = 'run')
-except ValueError: # handle the first date in session state that is absent in italy
-    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = 0, on_change = change_run_id, key = 'run')
-
-
+except ValueError: # handle the date in session state if is absent
+    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = -1, on_change = change_run_id, key = 'run')
 
 
 header_cols = st.columns(3)
@@ -112,8 +110,16 @@ img_width = st.slider("Image width", min_value=100, max_value=1000, value=550)
 
 with columns_1st[0]:
     fuel_path = f'{project_datapath}/{run_date}'
-    fuel_img = [f for f in os.listdir(fuel_path) if f.startswith('haz_plot_')][0]
+    fuel_version = st.session_state.get('fuel_sea', False)
+    if fuel_version:
+        fuel_img = [f for f in os.listdir(fuel_path) if f.startswith('haz_seasonal_plot_')][0]
+    else:
+        fuel_img = [f for f in os.listdir(fuel_path) if f.startswith('haz_plot_')][0]
+
     plot_img(f'{fuel_path}/{fuel_img}', img_width)
+
+    if vs_it == '4-Models':
+        fuel_version = st.toggle('view seasonal version', key = 'fuel_sea')
     
 
 with columns_1st[1]:
@@ -124,9 +130,9 @@ with columns_1st[1]:
     if vs_it == '4-Models':
         susc_version = st.session_state.get('alt', False)
         if susc_version:
-            suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_alternative')][0]
+            suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_seasonal')][0]
         else:
-            suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_plot')][0]
+            suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_alternative')][0]
     else:
         suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_plot')][0]
 
@@ -134,7 +140,7 @@ with columns_1st[1]:
     plot_img(f'{suscept_path}/{suscept_img}', img_width)
 
     if vs_it == '4-Models':
-        susc_version = st.toggle('change susc', key = 'alt')
+        susc_version = st.toggle('view seasonal version', key = 'alt')
 
 
 # add toggle object - fuel map distribibution
@@ -145,12 +151,19 @@ if fuel_chart:
 
 # insert container with stats plot
 with st.expander("Statistics"):
-    stats_path = f'{project_datapath}/statistics/sentinel_ba_over_fuel_classes.csv'
+    stats_version = st.session_state.get('stats_sea', False)
+    if stats_version:
+        stats_path = f'{project_datapath}/statistics/sentinel_ba_over_fuel_classes_seasonal.csv'
+    else:
+        stats_path = f'{project_datapath}/statistics/sentinel_ba_over_fuel_classes.csv'
     if os.path.isfile(stats_path):
         generate_ba_stats_plot(stats_path)
         st.caption("Fuel class distribution in sentinel2 burned area from Autobam")
     else:
         st.info("No burned area statistics available for this run.")
+    
+    if vs_it == '4-Models':
+        stats_version = st.toggle('view seasonal version', key = 'stats_sea')
 
 
 st.divider()
