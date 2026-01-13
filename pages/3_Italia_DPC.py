@@ -130,7 +130,10 @@ with columns_1st[1]:
     if vs_it == '4-Models':
         susc_version = st.session_state.get('alt', False)
         if susc_version:
-            suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_seasonal')][0]
+            try:
+                suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_seasonal')][0]
+            except:
+                st.info("No seasonal susceptibility map available for this run")
         else:
             suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_alternative')][0]
     else:
