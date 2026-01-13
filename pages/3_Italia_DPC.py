@@ -95,7 +95,7 @@ def change_run_id():
 try:
     run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = run_dates.index(st.session_state.run), on_change = change_run_id, key = 'run')
 except ValueError: # handle the date in session state if is absent
-    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = -1, on_change = change_run_id, key = 'run')
+    run_date = st.sidebar.selectbox('RUN DATES', run_dates, index = 0, on_change = change_run_id, key = 'run')
 
 
 header_cols = st.columns(3)
