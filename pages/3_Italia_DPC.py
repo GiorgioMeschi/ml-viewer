@@ -201,28 +201,28 @@ with columns_2nd[2]:
     spi6_path = f'{project_datapath}/{run_date}/{spiname}'
     plot_img(spi6_path, img_width_1)
 
-if vs_it == '4-Models':
-    st.divider()
+# if vs_it == '4-Models':
+#     st.divider()
 
-    columns_3rd = st.columns(3)
+#     columns_3rd = st.columns(3)
 
-    with columns_3rd[0]:
-        st.subheader('SPI 1')
-        spiname = [f for f in spinames if f.startswith('SPEI1_')][0]
-        spi1_path = f'{project_datapath}/{run_date}/{spiname}'
-        plot_img(spi1_path, img_width_1)
+#     with columns_3rd[0]:
+#         st.subheader('SPI 1')
+#         spiname = [f for f in spinames if f.startswith('SPEI1_')][0]
+#         spi1_path = f'{project_datapath}/{run_date}/{spiname}'
+#         plot_img(spi1_path, img_width_1)
 
-    with columns_3rd[1]:
-        st.subheader('SPI 3')
-        spiname = [f for f in spinames if f.startswith('SPEI3_')][0]
-        spi3_path = f'{project_datapath}/{run_date}/{spiname}'
-        plot_img(spi3_path, img_width_1)
+#     with columns_3rd[1]:
+#         st.subheader('SPI 3')
+#         spiname = [f for f in spinames if f.startswith('SPEI3_')][0]
+#         spi3_path = f'{project_datapath}/{run_date}/{spiname}'
+#         plot_img(spi3_path, img_width_1)
 
-    with columns_3rd[2]:
-        st.subheader('SPI 6')
-        spiname = [f for f in spinames if f.startswith('SPEI6_')][0]
-        spi6_path = f'{project_datapath}/{run_date}/{spiname}'
-        plot_img(spi6_path, img_width_1)
+#     with columns_3rd[2]:
+#         st.subheader('SPI 6')
+#         spiname = [f for f in spinames if f.startswith('SPEI6_')][0]
+#         spi6_path = f'{project_datapath}/{run_date}/{spiname}'
+#         plot_img(spi6_path, img_width_1)
 
 
 st.divider()
