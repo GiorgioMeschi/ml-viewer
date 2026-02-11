@@ -114,7 +114,11 @@ with columns_1st[0]:
     if fuel_version:
         fuel_img = [f for f in os.listdir(fuel_path) if f.startswith('haz_seasonal_plot_')][0]
     else:
-        fuel_img = [f for f in os.listdir(fuel_path) if f.startswith('haz_plot_')][0]
+        try:
+            fuel_img = [f for f in os.listdir(fuel_path) if f.startswith('haz_plot_')][0]
+        except:
+            fuel_img = [f for f in os.listdir(fuel_path) if f.startswith('haz_seasonal_plot_')][0]
+
 
     plot_img(f'{fuel_path}/{fuel_img}', img_width)
 
@@ -135,7 +139,10 @@ with columns_1st[1]:
             except:
                 st.info("No seasonal susceptibility map available for this run")
         else:
-            suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_alternative')][0]
+            try:
+                suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_alternative')][0]
+            except:
+                suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_seasonal')][0]
     else:
         suscept_img = [f for f in os.listdir(suscept_path) if f.startswith('susc_plot')][0]
 
